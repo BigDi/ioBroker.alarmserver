@@ -1,0 +1,117 @@
+{
+	"common": {
+		"name": "alarmserver",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "Alarmserver",
+		"titleLang": {
+			"en": "Alarmserver",
+			"de": "Alarmserver",
+			"ru": "Alarmserver",
+			"pt": "Alarmserver",
+			"nl": "Alarmserver",
+			"fr": "Serveur d'alarme",
+			"it": "Alarmserver",
+			"es": "Servidor de alarmas",
+			"pl": "Serwer alarmów",
+			"zh-cn": "Alarmserver"
+		},
+		"desc": {
+			"en": "Server part for cheap chinease IP CAMs",
+			"de": "Serverteil für billige Chinease IP CAMs",
+			"ru": "Серверная часть для дешевых китайских IP-камер",
+			"pt": "Parte do servidor para CAMs IP chinease baratos",
+			"nl": "Serveronderdeel voor goedkope chinease IP CAM's",
+			"fr": "Partie serveur pour les caméras IP chinease bon marché",
+			"it": "Parte server per telecamere IP chinease economiche",
+			"es": "Pieza de servidor para cámaras IP chinease baratas",
+			"pl": "Część serwerowa dla tanich chinease IP CAM",
+			"zh-cn": "服务器部分用于廉价的中文IP CAM"
+		},
+		"authors": [
+			"DirkS <dsatzky@gmail.com>"
+		],
+		"keywords": [
+			"ioBroker",
+			"template",
+			"Smart Home",
+			"home automation"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "alarmserver.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/BigDi/ioBroker.alarmserver/master/admin/alarmserver.png",
+		"readme": "https://github.com/BigDi/ioBroker.alarmserver/blob/master/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "alarm",
+		"compact": true,
+		"materialize": true,
+		"materializeTab": true,
+		"adminTab": {
+			"singleton": true,
+			"name": {
+				"en": "Alarmserver",
+				"de": "Alarmserver",
+				"ru": "Alarmserver",
+				"pt": "Alarmserver",
+				"nl": "Alarmserver",
+				"fr": "Serveur d'alarme",
+				"it": "Alarmserver",
+				"es": "Servidor de alarmas",
+				"pl": "Serwer alarmów",
+				"zh-cn": "Alarmserver"
+			},
+			"link": "",
+			"fa-icon": "info"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=1.4.2"
+			}
+		]
+	},
+	"native": {
+		"option1": true,
+		"option2": "42"
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
+}
