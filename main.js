@@ -7,7 +7,9 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
-
+const net = require("net");
+let server;
+let socket;
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -33,7 +35,16 @@ class Alarmserver extends utils.Adapter {
 	 */
 	async onReady() {
 		// Initialize your adapter here
+		server = net.createServer();
+		server.listen(15002);
 
+		const islistening = server.listening;
+
+		if(islistening){
+			this.log.info("Server is listening");
+		}else{
+			this.log.info("Server is not listening!");
+		}
 		// Reset the connection indicator during startup
 		this.setState("info.connection", false, true);
 
@@ -41,16 +52,17 @@ class Alarmserver extends utils.Adapter {
 		// this.config:
 		this.log.info("config serverPort: " + this.config.serverPort);
 
+		
 
 		/*
 		For every state in the system there has to be also an object of type state
 		Here a simple template for a boolean variable named "testVariable"
 		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
 		*/
-		await this.setObjectAsync("testVariable", {
+		await this.setObjectAsync("motionDetect", {
 			type: "state",
 			common: {
-				name: "testVariable",
+				name: "motionDetect",
 				type: "boolean",
 				role: "indicator",
 				read: true,
@@ -67,14 +79,14 @@ class Alarmserver extends utils.Adapter {
 		you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
 		*/
 		// the variable testVariable is set to true as command (ack=false)
-		await this.setStateAsync("testVariable", true);
+		//await this.setStateAsync("testVariable", true);
 
 		// same thing, but the value is flagged "ack"
 		// ack should be always set to true if the value is received from or acknowledged from the target system
-		await this.setStateAsync("testVariable", { val: true, ack: true });
+		
 
 		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
+		//await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
 
 		// examples for the checkPassword/checkGroup functions
 		let result = await this.checkPasswordAsync("admin", "iobroker");
@@ -83,6 +95,7 @@ class Alarmserver extends utils.Adapter {
 		result = await this.checkGroupAsync("admin", "admin");
 		this.log.info("check group user admin group admin: " + result);
 	}
+	
 
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
@@ -157,3 +170,43 @@ if (module.parent) {
 	// otherwise start the instance directly
 	new Alarmserver();
 }
+server.on("close",function(){
+	this.log.info(`Server closed !`);
+});
+
+socket.setEncoding('utf8');
+
+socket.setTimeout(800000,function(){
+// called after timeout -> same as socket.on('timeout')
+// it just tells that soket timed out => its ur job to end or destroy the socket.
+// socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
+// whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
+//console.log('Socket timed out');
+});
+
+socket.on("data",function(data){
+	//let bread = socket.bytesRead;
+	//let bwrite = socket.bytesWritten;
+	//console.log('Bytes read : ' + bread);
+	//console.log('Bytes written : ' + bwrite);
+	const jsonData = data.substring(20,data.length);
+	let obj = JSON.parse(jsonData);
+	if (obj["Motion"]=="start")
+	{
+		this.setStateAsync("motionDetect", { val: true, ack: true });
+	}
+	// console.log(obj);
+  
+	//echo data
+	//   var is_kernel_buffer_full = socket.write();
+	//   if(is_kernel_buffer_full){
+	//     console.log('Data was flushed successfully from kernel buffer i.e written successfully!');
+	//   }else{
+	//     socket.pause();
+	//   }
+  
+});
+
+socket.on('error',function(error){
+	this.log.info(`Error : ` + error);
+});
