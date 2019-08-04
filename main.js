@@ -8,8 +8,8 @@
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
 const net = require("net");
-let server;
-let socket;
+let server=null;
+
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -35,8 +35,7 @@ class Alarmserver extends utils.Adapter {
 	 */
 	async onReady() {
 		// Initialize your adapter here
-		server = net.createServer();
-		server.listen(15002);
+		serverStart();
 
 		const islistening = server.listening;
 
@@ -170,43 +169,52 @@ if (module.parent) {
 	// otherwise start the instance directly
 	new Alarmserver();
 }
-server.on("close",function(){
-	this.log.info(`Server closed !`);
-});
 
-socket.setEncoding('utf8');
 
-socket.setTimeout(800000,function(){
-// called after timeout -> same as socket.on('timeout')
-// it just tells that soket timed out => its ur job to end or destroy the socket.
-// socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
-// whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
-//console.log('Socket timed out');
-});
+function serverStart() {
+	server = net.createServer(onclientConnected);
+	server.listen(15002);
 
-socket.on("data",function(data){
+
+	server.on("close",function(){
+		this.log.info("Server closed !");
+	});
+
+	
+
+}
+function onclientConnected(socket) {
+  
+	socket.setEncoding("utf8");
+
+	socket.setTimeout(800000,function(){
+	// called after timeout -> same as socket.on('timeout')
+	// it just tells that soket timed out => its ur job to end or destroy the socket.
+	// socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
+	// whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
+		this.log.info ("Socket timed out");
+	});
+
+	socket.on("data",function(data){
 	//let bread = socket.bytesRead;
 	//let bwrite = socket.bytesWritten;
 	//console.log('Bytes read : ' + bread);
 	//console.log('Bytes written : ' + bwrite);
-	const jsonData = data.substring(20,data.length);
-	let obj = JSON.parse(jsonData);
-	if (obj["Motion"]=="start")
-	{
-		this.setStateAsync("motionDetect", { val: true, ack: true });
-	}
-	// console.log(obj);
-  
-	//echo data
-	//   var is_kernel_buffer_full = socket.write();
-	//   if(is_kernel_buffer_full){
-	//     console.log('Data was flushed successfully from kernel buffer i.e written successfully!');
-	//   }else{
-	//     socket.pause();
-	//   }
-  
-});
+		const jsonData = data.substring(20,data.length);
+		const obj = JSON.parse(jsonData);
+		if (obj["Event"]=="MotionDetect")
+		{
+			this.log.info("Motion : " + obj["Status"]);
+			//this.setStateAsync("motionDetect", { val: true, ack: true });
 
-socket.on('error',function(error){
-	this.log.info(`Error : ` + error);
-});
+		}
+	});
+	socket.on("error",function(error){
+		this.log.info("Error : " + error);
+	});
+	
+  
+}
+
+
+
