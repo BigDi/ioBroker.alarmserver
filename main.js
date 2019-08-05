@@ -210,8 +210,16 @@ function onclientConnected(socket) {
 	//console.log('Bytes read : ' + bread);
 	//console.log('Bytes written : ' + bwrite);
 		const jsonData = data.substring(20,data.length);
-		const obj = JSON.parse(jsonData);
-		if (obj["Event"]=="MotionDetect")
+		let obj=null;
+		try{
+			obj = JSON.parse(jsonData);
+		}
+		catch(e)
+		{
+			return;
+		}
+
+		if (obj.Event=="MotionDetect")
 		{
 			adapter.log.info("Motion : " + obj["Status"]);
 			//this.setStateAsync("motionDetect", { val: true, ack: true });
@@ -224,6 +232,5 @@ function onclientConnected(socket) {
 	
   
 }
-
 
 
