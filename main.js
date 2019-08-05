@@ -277,9 +277,7 @@ function createObject(jsonObj) {
 	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".StartTime", {
 		type: 'state', 
 		common: {
-			name: jsonObj.Status,
-			write: false,
-			read: true
+			name: jsonObj.StartTime
 		}, 
 		native: {}
 	  }));
@@ -289,7 +287,7 @@ function createObject(jsonObj) {
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".EndTime", {
 		type: 'state', 
 		common: {
-			name: jsonObj.Status
+			name: jsonObj.EndTime
 			
 		}, 
 		native: {}
@@ -310,7 +308,7 @@ function createObject(jsonObj) {
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Channel", {
 		type: 'state', 
 		common: {
-			name: jsonObj.Status
+			name: jsonObj.Channel
 		}, 
 		native: {}
 	  }));
@@ -320,6 +318,7 @@ function createObject(jsonObj) {
 
   function updateStates(jsonObj)
   {
+	adapter.lo.info("updateStates");  
 	if (typeof(jsonObj.StartTime) !== 'undefined')
 	{
 		adapter.setState(jsonObj.SerialID+".StartTime",jsonObj.StartTime);
