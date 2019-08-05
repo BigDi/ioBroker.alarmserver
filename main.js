@@ -272,9 +272,8 @@ function createChannel(serialNr)
 function createObject(jsonObj) {
 	const promises = [];
 
-
-	
-	
+	if (typeof(jsonObj.StartTime) !== 'undefined')
+	{
 	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".StartTime", {
 		type: 'state', 
 		common: {
@@ -284,6 +283,9 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
+	}
+	if (typeof(jsonObj.EndTime) !== 'undefined')
+	{
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".EndTime", {
 		type: 'state', 
 		common: {
@@ -293,6 +295,9 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
+	}
+	if (typeof(jsonObj.Status) !== 'undefined')
+	{
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Status", {
 		type: 'state', 
 		common: {
@@ -302,6 +307,9 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
+	}
+	if (typeof(jsonObj.Channel) !== 'undefined')
+	{
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Channel", {
 		type: 'state', 
 		common: {
@@ -311,6 +319,7 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
+	}
 	return promises;
   }
 
