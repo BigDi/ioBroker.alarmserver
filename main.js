@@ -232,7 +232,7 @@ function onclientConnected(socket) {
 
 								Promise.all(promises).then(() => {
 									adapter.log.debug("update states from summary");
-									updateStates(jsonData);
+									updateStates(obj);
 								}).catch((err) => {
 									adapter.log.error("error: " + err);
 								});
