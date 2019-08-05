@@ -327,19 +327,31 @@ function createObject(jsonObj) {
   {
 	if (typeof(jsonObj.StartTime) !== 'undefined')
 	{
-		adapter.setState(jsonObj.SerialID+".StartTime",jsonObj.StartTime,true);
+		adapter.crateState(jsonObj.SerialID+".StartTime",jsonObj.StartTime,{
+			name: 'Starttime',
+			type: 'string'
+		});
 	}
 	if (typeof(jsonObj.EndTime) !== 'undefined')
 	{
-		adapter.setState(jsonObj.SerialID+".EndTime",jsonObj.StartTime,true);
+		adapter.crateState(jsonObj.SerialID+".EndTime",jsonObj.EndTime,{
+			name: 'Endtime',
+			type: 'string'
+		});
 	}
 	if (typeof(jsonObj.Status) !== 'undefined')
 	{
-		adapter.setState(jsonObj.SerialID+".Status",jsonObj.Status,true);
+		adapter.crateState(jsonObj.SerialID+".Status",jsonObj.Status,{
+			name: 'Status',
+			type: 'string'
+		});
 	}
 	if (typeof(jsonObj.Channel) !== 'undefined')
 	{
-		adapter.setState(jsonObj.SerialID+".Channel",jsonObj.Channel,true);
+		adapter.crateState(jsonObj.SerialID+".Channel",jsonObj.Channel,{
+			name: 'Channel',
+			type: 'string'
+		});
 	}
 
   }
