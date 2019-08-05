@@ -59,20 +59,20 @@ class Alarmserver extends utils.Adapter {
 		Here a simple template for a boolean variable named "testVariable"
 		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
 		*/
-		await this.setObjectAsync("motionDetect", {
-			type: "state",
-			common: {
-				name: "motionDetect",
-				type: "boolean",
-				role: "indicator",
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
+		// await this.setObjectAsync("motionDetect", {
+		// 	type: "state",
+		// 	common: {
+		// 		name: "motionDetect",
+		// 		type: "boolean",
+		// 		role: "indicator",
+		// 		read: true,
+		// 		write: true,
+		// 	},
+		// 	native: {},
+		// });
 
 		// in this template all states changes inside the adapters namespace are subscribed
-		this.subscribeStates("*");
+		// this.subscribeStates("*");
 
 		/*
 		setState examples
@@ -89,11 +89,11 @@ class Alarmserver extends utils.Adapter {
 		//await this.setStateAsync("testVariable", { val: true, ack: true, expire: 30 });
 
 		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync("admin", "iobroker");
-		this.log.info("check user admin pw ioboker: " + result);
+		// let result = await this.checkPasswordAsync("admin", "iobroker");
+		// this.log.info("check user admin pw ioboker: " + result);
 
-		result = await this.checkGroupAsync("admin", "admin");
-		this.log.info("check group user admin group admin: " + result);
+		// result = await this.checkGroupAsync("admin", "admin");
+		// this.log.info("check group user admin group admin: " + result);
 	}
 	
 
@@ -178,7 +178,7 @@ function serverStart() {
 	
 	server.listen(port,(err) => {
 		if (err) {
-		  return adapter.log.info('something bad happened', err)
+		  return adapter.log.error('something bad happened', err)
 		}
 	  
 		adapter.log.info(`server is listening on ${port}`)
@@ -200,7 +200,7 @@ function onclientConnected(socket) {
 	// it just tells that soket timed out => its ur job to end or destroy the socket.
 	// socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
 	// whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
-	adapter.log.info ("Socket timed out");
+	adapter.log.error ("Socket timed out");
 	});
 
 	socket.on("data",function(data){
@@ -216,21 +216,100 @@ function onclientConnected(socket) {
 		}
 		catch(e)
 		{
+			adapter.log.error ("Parsing JSON Data");
 			return;
 		}
 
 		if (obj.Event=="MotionDetect")
 		{
-			adapter.log.info("Motion : " + obj["Status"]);
-			//this.setStateAsync("motionDetect", { val: true, ack: true });
+			adapter.log.info("Motion : " + obj.Status);
+			//adapter.setObjectNotExists();
+			let promises= createObject(jsonData);
+
+			Promise.all(promises).then(() => {
+				adapter.log.debug("update states from summary");
+				updateStates(jsonData);
+			}).catch((err) => {
+				adapter.log.error("error: " + err);
+			});
 
 		}
 	});
 	socket.on("error",function(error){
 		adapter.log.info("Error : " + error);
 	});
-	
-  
 }
+function createObject(jsonObj) {
+	const promises = [];
+	promises.push(	adapter.setObjectNotExistsAsync(jsonObj.SerialID, {
+	  type: 'channel',
+	  common: {
+		name: jsonObj.SerialID,
+		write: false,
+		read: true
+	  },
+	  native: {}
+	}));
+	
+	promises.push(adapter.setObjectNotExists("StartTime", {
+		type: 'state', 
+		common: {
+			name: jsonObj.Status,
+			write: false,
+			read: true
+		}, 
+		native: {}
+	  }));
+	  promises.push(adapter.setObjectNotExists("EndTime", {
+		type: 'state', 
+		common: {
+			name: jsonObj.Status,
+			write: false,
+			read: true
+		}, 
+		native: {}
+	  }));
+	  promises.push(adapter.setObjectNotExists("Status", {
+		type: 'state', 
+		common: {
+			name: jsonObj.Status,
+			write: false,
+			read: true
+		}, 
+		native: {}
+	  }));
+	  promises.push(adapter.setObjectNotExists("Channel", {
+		type: 'state', 
+		common: {
+			name: jsonObj.Status,
+			write: false,
+			read: true
+		}, 
+		native: {}
+	  }));
+	return promises;
+  }
 
+  function updateStates(jsonObj)
+  {
+	if (typeof(jsonObj.StartTime) !== 'undefined')
+	{
+		adapter.setState("StartTime",jsonObj.StartTime,true);
+	}
+	if (typeof(jsonObj.EndTime) !== 'undefined')
+	{
+		adapter.setState("EndTime",jsonObj.StartTime,true);
+	}
+	if (typeof(jsonObj.Status) !== 'undefined')
+	{
+		adapter.setState("Status",jsonObj.Status,true);
+	}
+	if (typeof(jsonObj.Channel) !== 'undefined')
+	{
+		adapter.setState("Channel",jsonObj.Channel,true);
+	}
+
+  }
+
+  
 
