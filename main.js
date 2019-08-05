@@ -224,14 +224,27 @@ function onclientConnected(socket) {
 		{
 			adapter.log.info("Motion : " + obj.Status);
 			//adapter.setObjectNotExists();
-			let promises= createObject(jsonData);
 
-			Promise.all(promises).then(() => {
-				adapter.log.debug("update states from summary");
-				updateStates(jsonData);
-			}).catch((err) => {
-				adapter.log.error("error: " + err);
-			});
+			let queue = createChannel(obj.SerialID);
+			Promise.all(queue)
+							.then(() => {
+								let promises= createObject(obj);
+
+								Promise.all(promises).then(() => {
+									adapter.log.debug("update states from summary");
+									updateStates(jsonData);
+								}).catch((err) => {
+									adapter.log.error("error: " + err);
+								});
+							})
+							.catch((err) => {
+								adapter.log.error("error: " + err);
+				})
+		;
+
+
+
+			
 
 		}
 	});
@@ -239,19 +252,30 @@ function onclientConnected(socket) {
 		adapter.log.info("Error : " + error);
 	});
 }
+
+function createChannel(serialNr)
+{
+	const promises = [];
+	promises.push(	adapter.setObjectNotExistsAsync(serialNr, {
+		type: 'channel',
+		common: {
+		  name: serialNr,
+		  write: false,
+		  read: true
+		},
+		native: {}
+	  }));
+	  
+	return promises;
+}
+
 function createObject(jsonObj) {
 	const promises = [];
-	promises.push(	adapter.setObjectNotExistsAsync(jsonObj.SerialID, {
-	  type: 'channel',
-	  common: {
-		name: jsonObj.SerialID,
-		write: false,
-		read: true
-	  },
-	  native: {}
-	}));
+
+
 	
-	promises.push(adapter.setObjectNotExists("StartTime", {
+	
+	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".StartTime", {
 		type: 'state', 
 		common: {
 			name: jsonObj.Status,
@@ -260,7 +284,7 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
-	  promises.push(adapter.setObjectNotExists("EndTime", {
+	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".EndTime", {
 		type: 'state', 
 		common: {
 			name: jsonObj.Status,
@@ -269,7 +293,7 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
-	  promises.push(adapter.setObjectNotExists("Status", {
+	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Status", {
 		type: 'state', 
 		common: {
 			name: jsonObj.Status,
@@ -278,7 +302,7 @@ function createObject(jsonObj) {
 		}, 
 		native: {}
 	  }));
-	  promises.push(adapter.setObjectNotExists("Channel", {
+	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Channel", {
 		type: 'state', 
 		common: {
 			name: jsonObj.Status,
@@ -294,19 +318,19 @@ function createObject(jsonObj) {
   {
 	if (typeof(jsonObj.StartTime) !== 'undefined')
 	{
-		adapter.setState("StartTime",jsonObj.StartTime,true);
+		adapter.setState(jsonObj.SerialID+".StartTime",jsonObj.StartTime,true);
 	}
 	if (typeof(jsonObj.EndTime) !== 'undefined')
 	{
-		adapter.setState("EndTime",jsonObj.StartTime,true);
+		adapter.setState(jsonObj.SerialID+".EndTime",jsonObj.StartTime,true);
 	}
 	if (typeof(jsonObj.Status) !== 'undefined')
 	{
-		adapter.setState("Status",jsonObj.Status,true);
+		adapter.setState(jsonObj.SerialID+".Status",jsonObj.Status,true);
 	}
 	if (typeof(jsonObj.Channel) !== 'undefined')
 	{
-		adapter.setState("Channel",jsonObj.Channel,true);
+		adapter.setState(jsonObj.SerialID+".Channel",jsonObj.Channel,true);
 	}
 
   }
