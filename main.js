@@ -9,7 +9,7 @@
 const utils = require("@iobroker/adapter-core");
 const net = require("net");
 let server=null;
-
+let adapter;
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
@@ -28,6 +28,7 @@ class Alarmserver extends utils.Adapter {
 		this.on("stateChange", this.onStateChange.bind(this));
 		// this.on("message", this.onMessage.bind(this));
 		this.on("unload", this.onUnload.bind(this));
+		adapter = this;
 	}
 
 	/**
@@ -173,11 +174,18 @@ if (module.parent) {
 
 function serverStart() {
 	server = net.createServer(onclientConnected);
-	server.listen(15002);
-
+	let port = adapter.config.serverPort;
+	
+	server.listen(port,(err) => {
+		if (err) {
+		  return adapter.log.info('something bad happened', err)
+		}
+	  
+		adapter.log.info(`server is listening on ${port}`)
+	  })
 
 	server.on("close",function(){
-		this.log.info("Server closed !");
+		adapter.log.info("Server closed !");
 	});
 
 	
@@ -192,10 +200,11 @@ function onclientConnected(socket) {
 	// it just tells that soket timed out => its ur job to end or destroy the socket.
 	// socket.end() vs socket.destroy() => end allows us to send final data and allows some i/o activity to finish before destroying the socket
 	// whereas destroy kills the socket immediately irrespective of whether any i/o operation is goin on or not...force destry takes place
-		this.log.info ("Socket timed out");
+	adapter.log.info ("Socket timed out");
 	});
 
 	socket.on("data",function(data){
+	adapter.log.info("(Event)Client connected");
 	//let bread = socket.bytesRead;
 	//let bwrite = socket.bytesWritten;
 	//console.log('Bytes read : ' + bread);
@@ -204,13 +213,13 @@ function onclientConnected(socket) {
 		const obj = JSON.parse(jsonData);
 		if (obj["Event"]=="MotionDetect")
 		{
-			this.log.info("Motion : " + obj["Status"]);
+			adapter.log.info("Motion : " + obj["Status"]);
 			//this.setStateAsync("motionDetect", { val: true, ack: true });
 
 		}
 	});
 	socket.on("error",function(error){
-		this.log.info("Error : " + error);
+		adapter.log.info("Error : " + error);
 	});
 	
   
