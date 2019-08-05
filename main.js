@@ -188,7 +188,7 @@ function serverStart() {
 		adapter.log.info("Server closed !");
 	});
 
-	
+	adapter.log.info("Tmpversion 1");
 
 }
 function onclientConnected(socket) {
@@ -272,33 +272,44 @@ function createChannel(serialNr)
 function createObject(jsonObj) {
 	const promises = [];
 
-	if (typeof(jsonObj.StartTime) !== 'undefined')
+	if (typeof(jsonObj.Event) !== 'undefined')
 	{
-	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".StartTime", {
+	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Event", {
 		type: 'state', 
 		common: {
-			name: jsonObj.StartTime
-		}, 
-		native: {}
-	  }));
-	}
-	if (typeof(jsonObj.EndTime) !== 'undefined')
-	{
-	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".EndTime", {
-		type: 'state', 
-		common: {
-			name: jsonObj.EndTime
 			
 		}, 
 		native: {}
 	  }));
 	}
+
+	if (typeof(jsonObj.StartTime) !== 'undefined')
+	{
+	promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Timestamp", {
+		type: 'state', 
+		common: {
+			
+		}, 
+		native: {}
+	  }));
+	}
+	// if (typeof(jsonObj.EndTime) !== 'undefined')
+	// {
+	//   promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Timestamp", {
+	// 	type: 'state', 
+	// 	common: {
+			
+			
+	// 	}, 
+	// 	native: {}
+	//   }));
+	// }
 	if (typeof(jsonObj.Status) !== 'undefined')
 	{
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Status", {
 		type: 'state', 
 		common: {
-			name: jsonObj.Status
+			
 		}, 
 		native: {}
 	  }));
@@ -308,7 +319,7 @@ function createObject(jsonObj) {
 	  promises.push(adapter.setObjectNotExistsAsync(jsonObj.SerialID+".Channel", {
 		type: 'state', 
 		common: {
-			name: jsonObj.Channel
+			
 		}, 
 		native: {}
 	  }));
@@ -321,12 +332,9 @@ function createObject(jsonObj) {
 	adapter.lo.info("updateStates");  
 	if (typeof(jsonObj.StartTime) !== 'undefined')
 	{
-		adapter.setState(jsonObj.SerialID+".StartTime",jsonObj.StartTime);
+		adapter.setState(jsonObj.SerialID+".Timestamp",jsonObj.StartTime);
 	}
-	if (typeof(jsonObj.EndTime) !== 'undefined')
-	{
-		adapter.setState(jsonObj.SerialID+".EndTime",jsonObj.EndTime);
-	}
+
 	if (typeof(jsonObj.Status) !== 'undefined')
 	{
 		adapter.setState(jsonObj.SerialID+".Status",jsonObj.Status);
