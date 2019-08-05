@@ -46,7 +46,7 @@ class Alarmserver extends utils.Adapter {
 			this.log.info("Server is not listening!");
 		}
 		// Reset the connection indicator during startup
-		this.setState("info.connection", false, true);
+		//this.setState("info.connection", false, true);
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via
 		// this.config:
@@ -329,21 +329,22 @@ function createObject(jsonObj) {
 
   function updateStates(jsonObj)
   {
-	adapter.lo.info("updateStates");  
-	if (typeof(jsonObj.StartTime) !== 'undefined')
-	{
-		adapter.setState(jsonObj.SerialID+".Timestamp",jsonObj.StartTime);
-	}
+	adapter.log.info("updateStates");  
+	//if (typeof(jsonObj.StartTime) !== 'undefined')
+	//{
+	adapter.setState(jsonObj.SerialID+".Timestamp",jsonObj.StartTime);
+	//}
 
-	if (typeof(jsonObj.Status) !== 'undefined')
-	{
-		adapter.setState(jsonObj.SerialID+".Status",jsonObj.Status);
-	}
-	if (typeof(jsonObj.Channel) !== 'undefined')
-	{
-		adapter.setState(jsonObj.SerialID+".Channel",jsonObj.Channel);
-	}
+	//if (typeof(jsonObj.Status) !== 'undefined')
+	//{
+	adapter.setState(jsonObj.SerialID+".Status",jsonObj.Status);
+	//}
+	//if (typeof(jsonObj.Channel) !== 'undefined')
+	//{
+	adapter.setState(jsonObj.SerialID+".Channel",jsonObj.Channel);
 
+	//}
+	adapter.setState(jsonObj.SerialID+".Event",jsonObj.Event);
   }
 
   
