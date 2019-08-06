@@ -1,8 +1,12 @@
 {
 	"common": {
 		"name": "alarmserver",
-		"version": "0.0.2",
+		"version": "0.0.3",
 		"news": {
+			"0.0.3":{
+				"en":"Update state order and add states",
+				"de":"Aktualisierung der Anordnung und hinzufügen von States"
+			},
 			"0.0.2":{
 				"en":"First update",
 				"de":"Erstes Update"

@@ -23,8 +23,8 @@ class Alarmserver extends utils.Adapter {
       name: "alarmserver"
     });
     this.on("ready", this.onReady.bind(this));
-    this.on("objectChange", this.onObjectChange.bind(this));
-    this.on("stateChange", this.onStateChange.bind(this));
+    //this.on("objectChange", this.onObjectChange.bind(this));
+    //this.on("stateChange", this.onStateChange.bind(this));
     // this.on("message", this.onMessage.bind(this));
     this.on("unload", this.onUnload.bind(this));
     adapter = this;
@@ -45,7 +45,7 @@ class Alarmserver extends utils.Adapter {
       this.log.info("Server is not listening!");
     }
     // Reset the connection indicator during startup
-    this.setState("info.connection", false, true);
+    this.setState("info.connection", true, true);
 
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // this.config:
@@ -110,30 +110,30 @@ class Alarmserver extends utils.Adapter {
    * @param {string} id
    * @param {ioBroker.Object | null | undefined} obj
    */
-  onObjectChange(id, obj) {
-    if (obj) {
-      // The object was changed
-      this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    } else {
-      // The object was deleted
-      this.log.info(`object ${id} deleted`);
-    }
-  }
+  // onObjectChange(id, obj) {
+  //   if (obj) {
+  //     // The object was changed
+  //     this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
+  //   } else {
+  //     // The object was deleted
+  //     this.log.info(`object ${id} deleted`);
+  //   }
+  // }
 
   /**
    * Is called if a subscribed state changes
    * @param {string} id
    * @param {ioBroker.State | null | undefined} state
    */
-  onStateChange(id, state) {
-    if (state) {
-      // The state was changed
-      this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-    } else {
-      // The state was deleted
-      this.log.info(`state ${id} deleted`);
-    }
-  }
+  // onStateChange(id, state) {
+  //   if (state) {
+  //     // The state was changed
+  //     this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+  //   } else {
+  //     // The state was deleted
+  //     this.log.info(`state ${id} deleted`);
+  //   }
+  // }
 
   // /**
   //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
@@ -314,15 +314,31 @@ function createObject(jsonObj) {
       }
     )
   );
-  // promises.push(
-  //   adapter.setObjectNotExistsAsync(jsonObj.SerialID + ".Channel", {
-  //     type: "state",
-  //     common: {
-  //       name: jsonObj.Status
-  //     },
-  //     native: {}
-  //   })
-  // );
+  promises.push(
+    adapter.setObjectNotExistsAsync(
+      jsonObj.SerialID + "." + jsonObj.Channel + ".Description",
+      {
+        type: "state",
+        common: {
+          name: "Status"
+        },
+        native: {}
+      }
+    )
+  );
+  promises.push(
+    adapter.setObjectNotExistsAsync(
+      jsonObj.SerialID + "." + jsonObj.Channel + ".Type",
+      {
+        type: "state",
+        common: {
+          name: "Status"
+        },
+        native: {}
+      }
+    )
+  );
+ 
   return promises;
 }
 
@@ -345,6 +361,20 @@ function updateStates(jsonObj) {
     adapter.setState(
       jsonObj.SerialID + "." + jsonObj.Channel + ".Status",
       jsonObj.Status,
+      true
+    );
+  }
+  if (typeof jsonObj.Descrip !== "undefined") {
+    adapter.setState(
+      jsonObj.SerialID + "." + jsonObj.Channel + ".Discription",
+      jsonObj.Descrip,
+      true
+    );
+  }
+  if (typeof jsonObj.Type !== "undefined") {
+    adapter.setState(
+      jsonObj.SerialID + "." + jsonObj.Channel + ".Type",
+      jsonObj.Type,
       true
     );
   }
