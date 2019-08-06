@@ -219,7 +219,7 @@ function onclientConnected(socket) {
               Promise.all(queueObjs)
                 .then(() => {
                   adapter.log.info("update states from summary");
-                  updateStates(jsonData);
+                  updateStates(obj);
                 })
                 .catch(err => {
                   adapter.log.error("error: " + err);
