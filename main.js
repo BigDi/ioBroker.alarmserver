@@ -215,10 +215,10 @@ function onclientConnected(socket) {
           let queueChannel = createChannel(obj.SerialID, obj.Channel);
           Promise.all(queueChannel)
             .then(() => {
-              let promises = createObject(obj);
-              Promise.all(promises)
+              let queueObjs = createObject(obj);
+              Promise.all(queueObjs)
                 .then(() => {
-                  adapter.log.debug("update states from summary");
+                  adapter.log.info("update states from summary");
                   updateStates(jsonData);
                 })
                 .catch(err => {
@@ -283,8 +283,7 @@ function createObject(jsonObj) {
         type: "state",
         common: {
           name: jsonObj.Status,
-          write: false,
-          read: true
+          write: false
         },
         native: {}
       }
@@ -297,8 +296,7 @@ function createObject(jsonObj) {
         type: "state",
         common: {
           name: jsonObj.Status,
-          write: false,
-          read: true
+          write: false
         },
         native: {}
       }
@@ -310,25 +308,21 @@ function createObject(jsonObj) {
       {
         type: "state",
         common: {
-          name: jsonObj.Status,
-          write: false,
-          read: true
+          name: jsonObj.Status
         },
         native: {}
       }
     )
   );
-  promises.push(
-    adapter.setObjectNotExistsAsync(jsonObj.SerialID + ".Channel", {
-      type: "state",
-      common: {
-        name: jsonObj.Status,
-        write: false,
-        read: true
-      },
-      native: {}
-    })
-  );
+  // promises.push(
+  //   adapter.setObjectNotExistsAsync(jsonObj.SerialID + ".Channel", {
+  //     type: "state",
+  //     common: {
+  //       name: jsonObj.Status
+  //     },
+  //     native: {}
+  //   })
+  // );
   return promises;
 }
 
@@ -354,7 +348,5 @@ function updateStates(jsonObj) {
       true
     );
   }
-  if (typeof jsonObj.Channel !== "undefined") {
-    adapter.setState(jsonObj.SerialID + ".Channel", jsonObj.Channel, true);
-  }
+  
 }
