@@ -320,7 +320,7 @@ function createObject(jsonObj) {
       {
         type: "state",
         common: {
-          name: "Status"
+          name: "Description"
         },
         native: {}
       }
@@ -332,7 +332,7 @@ function createObject(jsonObj) {
       {
         type: "state",
         common: {
-          name: "Status"
+          name: "Type"
         },
         native: {}
       }
