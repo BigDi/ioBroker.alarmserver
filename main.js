@@ -334,7 +334,7 @@ function updateStates(jsonObj) {
       true
     );
   }
-  if (typeof jsonObj.EndTime !== "undefined") {
+  if (typeof jsonObj.Event !== "undefined") {
     adapter.setState(
       jsonObj.SerialID + "." + jsonObj.Channel + ".Event",
       jsonObj.Event,
