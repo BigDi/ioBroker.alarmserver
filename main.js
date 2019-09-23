@@ -202,7 +202,8 @@ function onclientConnected(socket) {
     try {
       obj = JSON.parse(jsonData);
     } catch (e) {
-      adapter.log.error("Parsing JSON Data");
+        adapter.log.error("Parsing JSON Data");
+        adapter.log.error(jsonData);
       return;
     }
 
