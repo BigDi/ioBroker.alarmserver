@@ -196,13 +196,15 @@ function onclientConnected(socket) {
     adapter.log.info("(Event)Client connected");
     let bread = socket.bytesRead;
     adapter.log.debug("Bytes read : " + bread);
+    adapter.log.debug("Data read : " + data);
 
     const jsonData = data.substring(20, data.length);
     let obj = null;
     try {
       obj = JSON.parse(jsonData);
     } catch (e) {
-      adapter.log.error("Parsing JSON Data");
+        adapter.log.error("Parsing JSON Data");
+        adapter.log.error(jsonData);
       return;
     }
 

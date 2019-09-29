@@ -1,29 +1,33 @@
 {
 	"common": {
 		"name": "alarmserver",
-		"version": "0.0.3",
-		"news": {
-			"0.0.3":{
-				"en":"Update state order and add states",
-				"de":"Aktualisierung der Anordnung und hinzufügen von States"
-			},
-			"0.0.2":{
-				"en":"First update",
-				"de":"Erstes Update"
-			},
-			"0.0.1": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
-			}
-		},
+		"version": "0.0.4",
+    "news": {
+      "0.0.4": {
+        "en": "Testversion",
+        "de":  "Testversion"
+      },
+      "0.0.3": {
+        "en": "Update state order and add states",
+        "de": "Aktualisierung der Anordnung und hinzufügen von States"
+      },
+      "0.0.2": {
+        "en": "First update",
+        "de": "Erstes Update"
+      },
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
+    },
 		"title": "Alarmserver",
 		"titleLang": {
 			"en": "Alarmserver",
