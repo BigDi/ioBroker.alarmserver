@@ -1,6 +1,6 @@
 {
   "name": "iobroker.alarmserver",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Server part for cheap chinease IP CAMs",
   "author": {
     "name": "DirkS",
